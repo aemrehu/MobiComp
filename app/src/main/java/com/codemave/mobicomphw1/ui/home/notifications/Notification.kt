@@ -1,6 +1,8 @@
 package com.codemave.mobicomphw1.ui.home.notifications
 
 import android.app.admin.DevicePolicyManager.OnClearApplicationUserDataListener
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,10 +10,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.sourceInformationMarkerEnd
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,26 +21,34 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.os.persistableBundleOf
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.codemave.mobicomphw1.R
 import com.codemave.mobicomphw1.data.entity.Notification
+import kotlinx.coroutines.launch
 
 @Composable
 fun Notification(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    context: Context,
+    navController: NavController
 ) {
     val viewModel: NotificationViewModel = viewModel()
     val viewState by viewModel.state.collectAsState()
 
     Column(modifier = modifier) {
         NotificationList(
-            list = viewState.notifications
+            list = viewState.notifications,
+            context,
+            navController
         )
     }
 }
 
 @Composable
 private fun NotificationList(
-    list: List<Notification>
+    list: List<Notification>,
+    context: Context,
+    navController: NavController
 ) {
     LazyColumn(
         contentPadding = PaddingValues(0.dp),
@@ -48,8 +57,10 @@ private fun NotificationList(
         items(list) { item ->
             NotificationListItem(
                 notification = item,
-                onClick = {/* TODO */},
-                modifier = Modifier.fillParentMaxWidth()
+                // onClick = {/* TODO */},
+                modifier = Modifier.fillParentMaxWidth(),
+                context,
+                navController
             )
         }
     }
@@ -58,11 +69,17 @@ private fun NotificationList(
 @Composable
 private fun NotificationListItem(
     notification: Notification,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    // onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    context: Context,
+    navController: NavController,
+    viewModel: NotificationViewModel = viewModel()
 ) {
-    ConstraintLayout(modifier = Modifier.fillMaxWidth().clickable { onClick() }) {
-        val (divider, notificationTitle, icon) = createRefs()
+    ConstraintLayout(modifier = Modifier.fillMaxWidth()/*.clickable { onClick() }*/) {
+
+        val coroutineScope = rememberCoroutineScope()
+
+        val (divider, notificationTitle, editIcon, deleteIcon, checkIcon) = createRefs()
         Divider(
             Modifier.constrainAs(divider) {
                 top.linkTo(parent.top)
@@ -77,7 +94,7 @@ private fun NotificationListItem(
             modifier = Modifier.constrainAs(notificationTitle) {
                 linkTo(
                     start = parent.start,
-                    end = icon.start,
+                    end = checkIcon.start,
                     startMargin = 24.dp,
                     endMargin = 16.dp,
                     bias = 0f
@@ -86,15 +103,16 @@ private fun NotificationListItem(
                 width = Dimension.preferredWrapContent
             }
         )
+        // check icon
         IconButton(
             onClick = {},
             modifier = Modifier
                 .size(50.dp)
                 .padding(6.dp)
-                .constrainAs(icon) {
+                .constrainAs(checkIcon) {
                     top.linkTo(parent.top, 10.dp)
                     bottom.linkTo(parent.bottom, 10.dp)
-                    end.linkTo(parent.end)
+                    end.linkTo(editIcon.start)
                 }
         ) {
             Icon(
@@ -102,5 +120,55 @@ private fun NotificationListItem(
                 contentDescription = stringResource(R.string.check)
             )
         }
+        // edit icon
+        IconButton(
+            onClick = {
+                navController.navigate(
+                    "edit/{id}"
+                        .replace(
+                            oldValue = "{id}",
+                            newValue = notification.notificationId.toString()
+                        )
+                )
+                //Toast.makeText(context, "Notification deleted", Toast.LENGTH_SHORT).show()
+            },
+            modifier = Modifier
+                .size(50.dp)
+                .padding(6.dp)
+                .constrainAs(editIcon) {
+                    top.linkTo(parent.top, 10.dp)
+                    bottom.linkTo(parent.bottom, 10.dp)
+                    end.linkTo(deleteIcon.start)
+                }
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Edit,
+                contentDescription = stringResource(R.string.edit)
+            )
+        }
+        // delete icon
+        IconButton(
+            onClick = {
+                coroutineScope.launch {
+                    viewModel.deleteNotification(notification)
+                }
+                Toast.makeText(context, "Notification deleted", Toast.LENGTH_SHORT).show()
+            },
+            modifier = Modifier
+                .size(50.dp)
+                .padding(6.dp)
+                .constrainAs(deleteIcon) {
+                    top.linkTo(parent.top, 10.dp)
+                    bottom.linkTo(parent.bottom, 10.dp)
+                    end.linkTo(parent.end)
+                }
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Delete,
+                contentDescription = stringResource(R.string.delete)
+            )
+        }
+
+
     }
 }

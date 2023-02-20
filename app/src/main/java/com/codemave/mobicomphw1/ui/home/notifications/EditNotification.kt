@@ -26,7 +26,8 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
-fun AddNotification(
+fun EditNotification(
+    id: Long,
     navController: NavController,
     context: Context,
     viewModel: NotificationViewModel = viewModel()
@@ -39,11 +40,10 @@ fun AddNotification(
 
         val coroutineScope = rememberCoroutineScope()
 
-        val notificationTitle = rememberSaveable { mutableStateOf("") }
-        val notificationTime = rememberSaveable { mutableStateOf("") }
+        var notification: Notification = viewModel.getNotificationWithId(id)
 
-//        val locationX = remember { mutableStateOf("") }
-//        val locationY = remember { mutableStateOf("") }
+        val notificationTitle = rememberSaveable { mutableStateOf(notification.notificationTitle) }
+        val notificationTime = rememberSaveable { mutableStateOf(notification.notificationTime) }
 
         val appBarColor = MaterialTheme.colors.surface.copy(alpha = 0.87f)
 
@@ -60,38 +60,23 @@ fun AddNotification(
                 modifier = Modifier.fillMaxWidth(0.9f),
                 value = notificationTitle.value,
                 onValueChange = {notificationTitle.value = it},
-                label = {Text(text = "Title")},
+                label = {Text(text = "New title")},
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
             )
             Spacer(modifier = Modifier.height(20.dp))
-//        Row() {
-//            OutlinedTextField(
-//                //modifier = Modifier.fillMaxWidth(0.9f),
-//                value = locationX.value,
-//                onValueChange = {text -> locationX.value = text },
-//                label = {Text(text = "X-coordinate")},
-//                shape = RoundedCornerShape(corner = CornerSize(50.dp))
-//            )
-//            OutlinedTextField(
-//                //modifier = Modifier.fillMaxWidth(0.9f),
-//                value = locationY.value,
-//                onValueChange = {text -> locationY.value = text },
-//                label = {Text(text = "Y-coordinate")},
-//                shape = RoundedCornerShape(corner = CornerSize(50.dp))
-//            )
-//
-//        }
+
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(0.9f),
                 value = notificationTime.value,
                 onValueChange = {notificationTime.value = it},
-                label = {Text(text = "Time")},
+                label = {Text(text = "New time")},
                 shape = RoundedCornerShape(corner = CornerSize(50.dp)),
                 keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
+                    keyboardType = KeyboardType.Number
                 )
             )
             Spacer(modifier = Modifier.height(20.dp))
+
             Button(
                 enabled = true,
                 modifier = Modifier
@@ -99,15 +84,16 @@ fun AddNotification(
                     .height(50.dp),
                 onClick = {
                     coroutineScope.launch {
-                        viewModel.saveNotification(
+                        viewModel.updateNotification(
                             com.codemave.mobicomphw1.data.entity.Notification(
+                                notificationId = notification.notificationId,
                                 notificationTitle = notificationTitle.value,
                                 notificationTime = notificationTime.value,
-                                creationTime = Date().time,
-                                creatorId = SharedPreferences(context).username,
-                                notificationSeen = false,
-                                locationX = null,
-                                locationY = null
+                                creationTime = notification.creationTime,
+                                creatorId = notification.creatorId,
+                                notificationSeen = notification.notificationSeen,
+                                locationX = notification.locationX,
+                                locationY = notification.locationY
                             )
                         )
                     }
@@ -128,7 +114,7 @@ private fun TopBar(
     TopAppBar(
         title = {
             Text(
-                text = stringResource(R.string.addnotification),
+                text = stringResource(R.string.editnotification),
                 color = MaterialTheme.colors.primary,
                 modifier = Modifier
                     .padding(start = 4.dp)

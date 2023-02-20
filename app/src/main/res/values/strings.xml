@@ -4,4 +4,7 @@
     <string name="profile">Profile</string>
     <string name="check">Check</string>
     <string name="addnotification">Add notification</string>
+    <string name="delete">delete</string>
+    <string name="edit">edit notification</string>
+    <string name="editnotification">Edit notification</string>
 </resources>

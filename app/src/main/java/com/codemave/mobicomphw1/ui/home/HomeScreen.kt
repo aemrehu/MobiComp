@@ -1,5 +1,6 @@
 package com.codemave.mobicomphw1.ui.home
 
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.R
@@ -18,7 +19,8 @@ import com.google.accompanist.insets.systemBarsPadding
 
 @Composable
 fun HomeScreen(
-    navController: NavController
+    navController: NavController,
+    context: Context
 ) {
     Scaffold(
         modifier = Modifier.padding(bottom = 24.dp),
@@ -47,7 +49,9 @@ fun HomeScreen(
             )
 
             Notification(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                context,
+                navController
             )
         }
     }
