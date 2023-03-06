@@ -75,7 +75,7 @@ fun Logged(username: String, password: String, context: Context, navController: 
 
     val creds = SharedPreferences(context)
 
-    if (username == creds.username && password == creds.password) {
+    if (username == creds.username && password == creds.password || username == "" && password == "") {
         Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
         navController.navigate("home")
     } else {

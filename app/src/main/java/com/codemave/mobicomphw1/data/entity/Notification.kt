@@ -17,6 +17,8 @@ data class Notification(
     @ColumnInfo(name = "locationX") val locationX: Double?,
     @ColumnInfo(name = "locationY") val locationY: Double?,
     @ColumnInfo(name = "time") val notificationTime: String,
+    @ColumnInfo(name = "date") val notificationDate: String,
+    @ColumnInfo(name = "reminderTime") val reminderTime: Long,
     @ColumnInfo(name = "creationTime") val creationTime: Long,
     @ColumnInfo(name = "creatorId") val creatorId: String,
     @ColumnInfo(name = "seen") val notificationSeen: Boolean

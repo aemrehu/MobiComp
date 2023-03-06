@@ -18,7 +18,10 @@ object Graph {
         )
     }
 
+    lateinit var appContext: Context
+
     fun provide(context: Context) {
+        appContext = context
         database = Room.databaseBuilder(context, MobiCompDatabase::class.java, "data.db")
             .fallbackToDestructiveMigration()
             .allowMainThreadQueries()

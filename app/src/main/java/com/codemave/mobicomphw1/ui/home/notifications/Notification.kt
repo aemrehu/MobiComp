@@ -79,7 +79,7 @@ private fun NotificationListItem(
 
         val coroutineScope = rememberCoroutineScope()
 
-        val (divider, notificationTitle, editIcon, deleteIcon, checkIcon) = createRefs()
+        val (divider, notificationTitle, notificationTime, notificationDate, editIcon, deleteIcon, checkIcon) = createRefs()
         Divider(
             Modifier.constrainAs(divider) {
                 top.linkTo(parent.top)
@@ -103,6 +103,38 @@ private fun NotificationListItem(
                 width = Dimension.preferredWrapContent
             }
         )
+        Text(
+            text = notification.notificationTime,
+            maxLines = 1,
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier.constrainAs(notificationTime) {
+                linkTo(
+                    start = parent.start,
+                    end = notificationDate.start,
+                    startMargin = 24.dp,
+                    endMargin = 16.dp,
+                    bias = 0f
+                )
+                top.linkTo(notificationTitle.bottom, margin = 5.dp)
+                width = Dimension.preferredWrapContent
+            }
+        )
+        Text(
+            text = notification.notificationDate,
+            maxLines = 1,
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier.constrainAs(notificationDate) {
+                linkTo(
+                    start = notificationTime.end,
+                    end = checkIcon.start,
+                    startMargin = 24.dp,
+                    endMargin = 16.dp,
+                    bias = 0f
+                )
+                top.linkTo(notificationTitle.bottom, margin = 5.dp)
+                width = Dimension.preferredWrapContent
+            }
+        )
         // check icon
         IconButton(
             onClick = {},
@@ -123,6 +155,7 @@ private fun NotificationListItem(
         // edit icon
         IconButton(
             onClick = {
+                println("ID: ${notification.notificationId}")
                 navController.navigate(
                     "edit/{id}"
                         .replace(
