@@ -6,7 +6,7 @@ import com.codemave.mobicomphw1.data.entity.Notification
 
 @Database(
     entities = [Notification::class],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 abstract class MobiCompDatabase : RoomDatabase() {

@@ -28,4 +28,8 @@ class NotificationRepository(
     suspend fun updateNotification(notification: Notification) {
         return notificationDao.update(notification)
     }
+
+    fun update2(notification: Notification) {
+        return notificationDao.update2(notification)
+    }
 }

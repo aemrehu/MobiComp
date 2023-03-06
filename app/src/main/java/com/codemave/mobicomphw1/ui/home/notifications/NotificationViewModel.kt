@@ -4,8 +4,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.NotificationManagerCompat.from
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -51,6 +51,10 @@ class NotificationViewModel(
         return result
     }
 
+    suspend fun updateWithoutPushNotification(notification: Notification) {
+        return notificationRepository.updateNotification(notification)
+    }
+
     fun getNotificationWithId(id: Long): Notification {
         return notificationRepository.getNotificationWithId(id)
     }
@@ -82,7 +86,7 @@ private fun setOneTimeNotification(reminder: Notification, id: Long) {
     println(reminder.creationTime)
 
     val notificationWorker = OneTimeWorkRequestBuilder<NotificationWorker>()
-        .setInitialDelay(delay-30, TimeUnit.SECONDS)
+        .setInitialDelay(delay-20, TimeUnit.SECONDS)
         .setConstraints(constraints)
         .build()
 
@@ -92,12 +96,14 @@ private fun setOneTimeNotification(reminder: Notification, id: Long) {
         .observeForever { workInfo ->
             if (workInfo.state == WorkInfo.State.SUCCEEDED) {
                 createReminderNotification(reminder, id)
+                updateSeen(reminder)
             }
         }
 
 }
 
 private fun createReminderNotification(reminder: Notification, id: Long) {
+
     val notificationId = id.toInt()
     val builder = NotificationCompat.Builder(Graph.appContext, "CHANNEL_ID")
         .setSmallIcon(R.drawable.ic_launcher_background)
@@ -108,6 +114,26 @@ private fun createReminderNotification(reminder: Notification, id: Long) {
     with(from(Graph.appContext)) {
         notify(notificationId, builder.build())
     }
+}
+
+private fun updateSeen(
+    reminder: Notification,
+    notificationRepository: NotificationRepository = Graph.notificationRepository
+) {
+    notificationRepository.update2(
+        Notification(
+            notificationId = reminder.notificationId,
+            notificationTitle = reminder.notificationTitle,
+            notificationTime = reminder.notificationTime,
+            notificationDate = reminder.notificationDate,
+            reminderTime = reminder.reminderTime,
+            creationTime = reminder.creationTime,
+            creatorId = reminder.creatorId,
+            notificationSeen = true,
+            locationY = reminder.locationY,
+            locationX = reminder.locationX
+        )
+    )
 }
 
 private fun createNotificationChannel(context: Context) {

@@ -30,6 +30,9 @@ abstract class NotificationDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun update(entity: Notification)
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun update2(entity: Notification)
+
     @Delete
     abstract suspend fun delete(entity: Notification): Int
 }

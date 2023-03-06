@@ -14,6 +14,8 @@ class NotificationWorker(
         return try {
             println("Reminder fired")
             // Display the reminder in the main view
+            // -> change 'seen' to true
+
             Result.success()
         } catch (e: Exception) {
             Result.failure()
