@@ -12,7 +12,7 @@ class NotificationWorker(
 
     override fun doWork(): Result {
         return try {
-            println("Reminder fired")
+            println("Firing reminder")
             // Display the reminder in the main view
             // -> change 'seen' to true
 

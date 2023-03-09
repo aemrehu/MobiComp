@@ -75,6 +75,9 @@ data class NotificationViewModelState(
 )
 
 private fun setOneTimeNotification(reminder: Notification, id: Long) {
+
+
+
     val workManager = WorkManager.getInstance(Graph.appContext)
     val constraints = Constraints.Builder()
         .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -94,10 +97,18 @@ private fun setOneTimeNotification(reminder: Notification, id: Long) {
 
     workManager.getWorkInfoByIdLiveData(notificationWorker.id)
         .observeForever { workInfo ->
-            if (workInfo.state == WorkInfo.State.SUCCEEDED) {
-                createReminderNotification(reminder, id)
-                updateSeen(reminder)
+            try {
+                // check if reminder has been deleted
+                val reminder2: Notification = Graph.notificationRepository.getNotificationWithId(id)
+
+                if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+                    createReminderNotification(reminder, id)
+                    updateSeen(reminder)
+                }
+            } catch (e: Exception) {
+                println("Reminder deleted, no notification")
             }
+
         }
 
 }
