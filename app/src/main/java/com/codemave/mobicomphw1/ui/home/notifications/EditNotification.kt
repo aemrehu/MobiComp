@@ -114,7 +114,7 @@ fun EditNotification(
 //                    keyboardType = KeyboardType.Number
 //                )
 //            )
-            Button(
+            OutlinedButton(
                 enabled = true,
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
@@ -129,7 +129,7 @@ fun EditNotification(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Button(
+            OutlinedButton(
                 enabled = true,
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
@@ -142,6 +142,18 @@ fun EditNotification(
                 Text(text = "Date: " + date.value)
             }
 
+            Spacer(modifier = Modifier.height(20.dp))
+
+            OutlinedButton(
+                enabled = true,
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(50.dp),
+                onClick = { /*TODO: navController.navigate("map")*/ },
+                shape = RoundedCornerShape(corner = CornerSize(50.dp))
+            ) {
+                Text(text = "Location")
+            }
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
@@ -169,8 +181,8 @@ fun EditNotification(
                                 creationTime = notification.creationTime,
                                 creatorId = notification.creatorId,
                                 notificationSeen = notification.notificationSeen,
-                                locationX = notification.locationX,
-                                locationY = notification.locationY
+                                latitude = notification.latitude,
+                                longitude = notification.longitude
                             )
                         )
                     }

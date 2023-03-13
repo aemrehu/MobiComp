@@ -7,6 +7,7 @@ import androidx.compose.material.R
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -200,12 +201,12 @@ private fun HomeAppBar(
         },
         backgroundColor = backgroundColor,
         actions = {
-//            IconButton(onClick = {}) {
-//                Icon(
-//                    imageVector = Icons.Filled.Search,
-//                    contentDescription = stringResource(com.codemave.mobicomphw1.R.string.search)
-//                )
-//            }
+            IconButton(onClick = {navController.navigate("map")}) {
+                Icon(
+                    imageVector = Icons.Filled.Place,
+                    contentDescription = "Reminders on map"
+                )
+            }
             IconButton(onClick = {navController.navigate("profile")}) {
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,

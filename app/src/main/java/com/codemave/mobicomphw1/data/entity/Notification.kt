@@ -14,8 +14,8 @@ import androidx.room.PrimaryKey
 data class Notification(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val notificationId: Long = 0,
     @ColumnInfo(name = "title") val notificationTitle: String, //message
-    @ColumnInfo(name = "locationX") val locationX: Double?,
-    @ColumnInfo(name = "locationY") val locationY: Double?,
+    @ColumnInfo(name = "locationX") val latitude: Double?,
+    @ColumnInfo(name = "locationY") val longitude: Double?,
     @ColumnInfo(name = "time") val notificationTime: String,
     @ColumnInfo(name = "date") val notificationDate: String,
     @ColumnInfo(name = "reminderTime") val reminderTime: Long,

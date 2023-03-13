@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import com.codemave.mobicomphw1.R
 import com.codemave.mobicomphw1.SharedPreferences
 import com.codemave.mobicomphw1.data.entity.Notification
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -69,6 +70,12 @@ fun AddNotification(
     date.value = "%02d.%02d.%04d".format(day,month+1,year)
 
     val reminderCalendar = Calendar.getInstance()
+
+    val latlng = navController
+        .currentBackStackEntry
+        ?.savedStateHandle
+        ?.getLiveData<LatLng>("location_data")
+        ?.value
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -131,9 +138,11 @@ fun AddNotification(
 //                )
 //            )
 
-            Button(
+            OutlinedButton(
                 enabled = true,
-                modifier = Modifier.fillMaxWidth(0.9f).height(50.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(50.dp),
                 onClick = {
                     timePickerDialog.show()
                 },
@@ -144,9 +153,11 @@ fun AddNotification(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Button(
+            OutlinedButton(
                 enabled = true,
-                modifier = Modifier.fillMaxWidth(0.9f).height(50.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(50.dp),
                 onClick = {
                     datePickerDialog.show()
                 },
@@ -156,6 +167,25 @@ fun AddNotification(
             }
 
             Spacer(modifier = Modifier.height(20.dp))
+
+
+            OutlinedButton(
+                enabled = true,
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(50.dp),
+                onClick = { navController.navigate("location") },
+                shape = RoundedCornerShape(corner = CornerSize(50.dp))
+            ) {
+                if (latlng == null) {
+                    Text(text = "Location")
+                } else {
+                    Text(text = "Lat: %.2f, Lng: %.2f".format(latlng.latitude, latlng.longitude))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             Button(
                 enabled = true,
                 modifier = Modifier
@@ -191,8 +221,8 @@ fun AddNotification(
                                 creationTime = Date().time,
                                 creatorId = SharedPreferences(context).username,
                                 notificationSeen = false,
-                                locationX = null,
-                                locationY = null
+                                latitude = latlng?.latitude,
+                                longitude = latlng?.longitude
                             )
                         )
                     }

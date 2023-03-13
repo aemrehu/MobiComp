@@ -61,7 +61,7 @@ class NotificationViewModel(
 
     init {
         createNotificationChannel(context = Graph.appContext)
-        // setOneTimeNotification()
+
         viewModelScope.launch() {
             notificationRepository.getNotifications().collect { notifications ->
                 _state.value = NotificationViewModelState(notifications)
@@ -119,7 +119,13 @@ private fun createReminderNotification(reminder: Notification, id: Long) {
     val builder = NotificationCompat.Builder(Graph.appContext, "CHANNEL_ID")
         .setSmallIcon(R.drawable.ic_launcher_background)
         .setContentTitle(reminder.notificationTitle)
-        .setContentText(reminder.notificationTime + " " + reminder.notificationDate)
+        .setContentText(
+            reminder.notificationTime
+            + " "
+            + reminder.notificationDate
+            + " "
+            + "Lat: %.2f, Lng: %.2f".format(reminder.latitude, reminder.longitude)
+        )
         .setPriority(NotificationCompat.PRIORITY_HIGH)
 
     with(from(Graph.appContext)) {
@@ -141,8 +147,8 @@ private fun updateSeen(
             creationTime = reminder.creationTime,
             creatorId = reminder.creatorId,
             notificationSeen = true,
-            locationY = reminder.locationY,
-            locationX = reminder.locationX
+            latitude = reminder.latitude,
+            longitude = reminder.longitude
         )
     )
 }
