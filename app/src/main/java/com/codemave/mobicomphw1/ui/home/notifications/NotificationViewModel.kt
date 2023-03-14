@@ -9,6 +9,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat.from
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
@@ -18,6 +19,7 @@ import com.codemave.mobicomphw1.Graph
 import com.codemave.mobicomphw1.R
 import com.codemave.mobicomphw1.data.entity.Notification
 import com.codemave.mobicomphw1.data.repository.NotificationRepository
+import com.codemave.mobicomphw1.ui.maps.geofence.Geofence
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -37,6 +39,7 @@ class NotificationViewModel(
         println("ID: $result")
         //createReminderNotification(notification)
         setOneTimeNotification(notification, result)
+        Geofence.addGeofence(notification,result)
         return result
     }
 
@@ -75,7 +78,6 @@ data class NotificationViewModelState(
 )
 
 private fun setOneTimeNotification(reminder: Notification, id: Long) {
-
 
 
     val workManager = WorkManager.getInstance(Graph.appContext)

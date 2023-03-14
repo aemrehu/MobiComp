@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import com.codemave.mobicomphw1.R
 import com.codemave.mobicomphw1.SharedPreferences
 import com.codemave.mobicomphw1.data.entity.Notification
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -63,6 +64,14 @@ fun EditNotification(
     )
 
     val reminderCalendar = Calendar.getInstance()
+
+    var latitude: Double?
+    var longitude: Double?
+    val latlng = navController
+        .currentBackStackEntry
+        ?.savedStateHandle
+        ?.getLiveData<LatLng>("location_data")
+        ?.value
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -149,11 +158,16 @@ fun EditNotification(
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
                     .height(50.dp),
-                onClick = { /*TODO: navController.navigate("map")*/ },
+                onClick = { navController.navigate("location") },
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
             ) {
-                Text(text = "Location")
+                if (latlng == null) {
+                    Text(text = "Location")
+                } else {
+                    Text(text = "Lat: %.2f, Lng: %.2f".format(latlng.latitude, latlng.longitude))
+                }
             }
+
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
@@ -162,6 +176,13 @@ fun EditNotification(
                     .fillMaxWidth(0.9f)
                     .height(50.dp),
                 onClick = {
+                    if (latlng == null) {
+                        latitude = notification.latitude
+                        longitude = notification.longitude
+                    } else {
+                        latitude = latlng.latitude
+                        longitude = latlng.longitude
+                    }
                     val timeValues = time.value.split(":")
                     val dateValues = date.value.split(".")
                     val newyear = Integer.parseInt(dateValues[2])
@@ -181,8 +202,8 @@ fun EditNotification(
                                 creationTime = notification.creationTime,
                                 creatorId = notification.creatorId,
                                 notificationSeen = notification.notificationSeen,
-                                latitude = notification.latitude,
-                                longitude = notification.longitude
+                                latitude = latitude,
+                                longitude = longitude
                             )
                         )
                     }

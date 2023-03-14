@@ -204,13 +204,6 @@ fun AddNotification(
                     val newhour = Integer.parseInt(timeValues[0])
                     val newminute = Integer.parseInt(timeValues[1])
                     reminderCalendar.set(newyear,newmonth-1,newday,newhour,newminute)
-//                    println(newyear)
-//                    println(newmonth)
-//                    println(newday)
-//                    println(newhour)
-//                    println(newminute)
-                    //calendar.set(year, month, day, hour, minute)
-                    //val newcalendar = Calendar.getInstance()
                     coroutineScope.launch {
                         viewModel.saveNotification(
                             com.codemave.mobicomphw1.data.entity.Notification(

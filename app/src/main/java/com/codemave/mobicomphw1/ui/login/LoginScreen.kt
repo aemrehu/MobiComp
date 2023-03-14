@@ -1,6 +1,5 @@
 package com.codemave.mobicomphw1.ui.login
 
-import android.app.SharedElementCallback
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -18,7 +17,6 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.codemave.mobicomphw1.MainActivity
 import com.codemave.mobicomphw1.SharedPreferences
 
 @Composable
@@ -26,12 +24,15 @@ fun LoginScreen(
     context: Context,
     navController: NavController
 ) {
+
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
 
     ) {
+
         val username = remember { mutableStateOf("") }
         val password = remember { mutableStateOf("") }
 

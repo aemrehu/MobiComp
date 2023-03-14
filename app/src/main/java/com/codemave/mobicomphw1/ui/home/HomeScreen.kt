@@ -201,12 +201,17 @@ private fun HomeAppBar(
         },
         backgroundColor = backgroundColor,
         actions = {
-            IconButton(onClick = {navController.navigate("map")}) {
-                Icon(
-                    imageVector = Icons.Filled.Place,
-                    contentDescription = "Reminders on map"
-                )
+            OutlinedButton(
+                onClick = { navController.navigate("map") }
+            ) {
+                Text(text = "Map")
             }
+//            IconButton(onClick = {navController.navigate("map")}) {
+//                Icon(
+//                    imageVector = Icons.Filled.Place,
+//                    contentDescription = "Reminders on map"
+//                )
+//            }
             IconButton(onClick = {navController.navigate("profile")}) {
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,

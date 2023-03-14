@@ -12,6 +12,7 @@ import com.codemave.mobicomphw1.ui.home.profile.ProfileScreen
 import com.codemave.mobicomphw1.ui.login.LoginScreen
 import com.codemave.mobicomphw1.ui.maps.AllMarkersMap
 import com.codemave.mobicomphw1.ui.maps.NotificationLocationMap
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
 @Composable
 fun MobiCompApp(

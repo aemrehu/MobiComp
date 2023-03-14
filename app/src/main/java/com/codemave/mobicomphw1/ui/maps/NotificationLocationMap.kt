@@ -14,7 +14,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+import com.codemave.mobicomphw1.Graph
 import com.codemave.mobicomphw1.util.rememberMapViewWithLifecycle
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
@@ -27,6 +30,10 @@ import java.util.*
 fun NotificationLocationMap(
     navController: NavController
 ) {
+    lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    fusedLocationClient = LocationServices.getFusedLocationProviderClient(Graph.appContext)
+
     val mapView = rememberMapViewWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
 
@@ -58,14 +65,20 @@ fun NotificationLocationMap(
                     map.uiSettings.isZoomControlsEnabled = true
                     val location = LatLng(65.059243, 25.467069)
 
-                    map.moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(location, 14.5f)
-                    )
+                    map.isMyLocationEnabled = true
 
-                    //val markerOptions = MarkerOptions()
-                    //    .title("Test marker")
-                    //    .position(location)
-                    //map.addMarker(markerOptions)
+                    fusedLocationClient.lastLocation.addOnSuccessListener {
+                        if (it != null) {
+                            val latLng = LatLng(it.latitude, it.longitude)
+                            map.moveCamera(
+                                CameraUpdateFactory.newLatLngZoom(latLng, 14.5f)
+                            )
+                        } else {
+                            map.moveCamera(
+                                CameraUpdateFactory.newLatLngZoom(location, 14.5f)
+                            )
+                        }
+                    }
 
                     setMapLongClick(map, navController)
                 }
