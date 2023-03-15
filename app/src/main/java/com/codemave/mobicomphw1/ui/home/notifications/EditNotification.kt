@@ -111,18 +111,26 @@ fun EditNotification(
                 label = {Text(text = "Title")},
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
             )
+
             Spacer(modifier = Modifier.height(20.dp))
 
-//            OutlinedTextField(
-//                modifier = Modifier.fillMaxWidth(0.9f),
-//                value = notificationTime.value,
-//                onValueChange = {notificationTime.value = it},
-//                label = {Text(text = "Time")},
-//                shape = RoundedCornerShape(corner = CornerSize(50.dp)),
-//                keyboardOptions = KeyboardOptions(
-//                    keyboardType = KeyboardType.Number
-//                )
-//            )
+            OutlinedButton(
+                enabled = true,
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(50.dp),
+                onClick = { navController.navigate("location") },
+                shape = RoundedCornerShape(corner = CornerSize(50.dp))
+            ) {
+                if (latlng == null) {
+                    Text(text = "Location")
+                } else {
+                    Text(text = "Lat: %.2f, Lng: %.2f".format(latlng.latitude, latlng.longitude))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             OutlinedButton(
                 enabled = true,
                 modifier = Modifier
@@ -149,23 +157,6 @@ fun EditNotification(
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
             ) {
                 Text(text = "Date: " + date.value)
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            OutlinedButton(
-                enabled = true,
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .height(50.dp),
-                onClick = { navController.navigate("location") },
-                shape = RoundedCornerShape(corner = CornerSize(50.dp))
-            ) {
-                if (latlng == null) {
-                    Text(text = "Location")
-                } else {
-                    Text(text = "Lat: %.2f, Lng: %.2f".format(latlng.latitude, latlng.longitude))
-                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))

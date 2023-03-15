@@ -36,7 +36,7 @@ class NotificationViewModel(
 
     suspend fun saveNotification(notification: Notification): Long {
         val result = notificationRepository.addNotification(notification)
-        println("ID: $result")
+        println("Saved. ID: $result")
         //createReminderNotification(notification)
         setOneTimeNotification(notification, result)
         Geofence.addGeofence(notification,result)
@@ -49,7 +49,7 @@ class NotificationViewModel(
 
     suspend fun updateNotification(notification: Notification) {
         val result = notificationRepository.updateNotification(notification)
-        println("ID: ${notification.notificationId}")
+        println("Updated. ID: ${notification.notificationId}")
         setOneTimeNotification(notification, notification.notificationId)
         return result
     }
@@ -87,8 +87,8 @@ private fun setOneTimeNotification(reminder: Notification, id: Long) {
 
     val delay: Long = (reminder.reminderTime - reminder.creationTime) / 1000
 
-    println(reminder.reminderTime)
-    println(reminder.creationTime)
+    println("reminderTime: ${reminder.reminderTime}")
+    println("creationTime: ${reminder.creationTime}")
 
     val notificationWorker = OneTimeWorkRequestBuilder<NotificationWorker>()
         .setInitialDelay(delay-20, TimeUnit.SECONDS)
@@ -105,17 +105,16 @@ private fun setOneTimeNotification(reminder: Notification, id: Long) {
 
                 if (workInfo.state == WorkInfo.State.SUCCEEDED) {
                     createReminderNotification(reminder, id)
-                    updateSeen(reminder)
+//                    updateSeen(reminder)
                 }
             } catch (e: Exception) {
                 println("Reminder deleted, no notification")
             }
 
         }
-
 }
 
-private fun createReminderNotification(reminder: Notification, id: Long) {
+fun createReminderNotification(reminder: Notification, id: Long) {
 
     val notificationId = id.toInt()
     val builder = NotificationCompat.Builder(Graph.appContext, "CHANNEL_ID")
@@ -133,6 +132,7 @@ private fun createReminderNotification(reminder: Notification, id: Long) {
     with(from(Graph.appContext)) {
         notify(notificationId, builder.build())
     }
+    updateSeen(reminder)
 }
 
 private fun updateSeen(
@@ -182,31 +182,3 @@ private fun createSuccessNotification() {
         notify(notificationId, builder.build())
     }
 }
-
-//class NotificationViewModel :  ViewModel() {
-//    private val _state = MutableStateFlow(NotificationViewModelState())
-//    val state: StateFlow<NotificationViewModelState>
-//        get() = _state
-//
-//    init {
-//        val list = mutableListOf<Notification>()
-////        for (x in 1..20) {
-////            list.add(
-////                Notification(
-////                    notificationId = x.toLong(),
-////                    notificationTitle = "$x. notification"
-////                )
-////            )
-////        }
-//
-//        viewModelScope.launch {
-//            _state.value = NotificationViewModelState(
-//                notifications = list
-//            )
-//        }
-//    }
-//}
-//
-//data class NotificationViewModelState(
-//    val notifications: List<Notification> = emptyList()
-//)

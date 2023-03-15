@@ -2,6 +2,7 @@ package com.codemave.mobicomphw1.ui.maps.geofence
 
 import android.Manifest
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
@@ -14,10 +15,6 @@ import com.google.android.gms.location.LocationServices
 
 object Geofence {
     private val geofencingClient = LocationServices.getGeofencingClient(Graph.appContext)
-
-    suspend fun test() {
-        println("testi")
-    }
 
     fun addGeofence(
         reminder: Notification,
@@ -33,7 +30,7 @@ object Geofence {
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // 2
             geofencingClient
-                .addGeofences(buildGeofencingRequest(geofence), geofencePendingIntent)
+                .addGeofences(buildGeofencingRequest(geofence), createPendingIntent(id))
                 // 3
                 .addOnSuccessListener {
                     println("Geofence created!!!")
@@ -45,6 +42,26 @@ object Geofence {
                     println("Geofence ERROR")
                 }
         }
+    }
+
+    fun removeGeofences(
+        context: Context,
+        triggeringGeofenceList: MutableList<Geofence>
+    ) {
+        val geofenceIdList = mutableListOf<String>()
+        for (entry in triggeringGeofenceList) {
+            geofenceIdList.add(entry.requestId)
+        }
+        LocationServices.getGeofencingClient(context).removeGeofences(geofenceIdList)
+    }
+
+    fun removeGeofenceWithNotificationId(
+        context: Context,
+        id: Long
+    ) {
+        val geofenceIdList = mutableListOf<String>()
+        geofenceIdList.add(id.toString())
+        LocationServices.getGeofencingClient(context).removeGeofences(geofenceIdList)
     }
 
     private fun buildGeofence(reminder: Notification, id: Long): Geofence? {
@@ -79,12 +96,24 @@ object Geofence {
             .build()
     }
 
-    private val geofencePendingIntent: PendingIntent by lazy {
+    private fun createPendingIntent(
+        id: Long
+    ): PendingIntent {
         val intent = Intent(Graph.appContext, GeofenceBroadcastReceiver::class.java)
-        PendingIntent.getBroadcast(
-            Graph.appContext,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT)
+            .putExtra("reminderID", id)
+        val geofencePendingIntent = PendingIntent.getBroadcast(
+                Graph.appContext,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT)
+        return geofencePendingIntent
     }
+//    private val geofencePendingIntent: PendingIntent by lazy {
+//        val intent = Intent(Graph.appContext, GeofenceBroadcastReceiver::class.java)
+//        PendingIntent.getBroadcast(
+//            Graph.appContext,
+//            0,
+//            intent,
+//            PendingIntent.FLAG_UPDATE_CURRENT)
+//    }
 }

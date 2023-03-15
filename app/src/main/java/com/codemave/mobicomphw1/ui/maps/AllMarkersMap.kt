@@ -27,6 +27,7 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.ktx.awaitMap
@@ -119,6 +120,14 @@ private fun addReminderMarkers(
                         + ", Date: "
                         + reminder.notificationDate
                     )
+            )
+            map.addCircle(
+                CircleOptions()
+                    .center(LatLng(reminder.latitude, reminder.longitude))
+                    .radius(100.0)
+                    .strokeColor(android.graphics.Color.argb(50,70,70,70))
+                    .fillColor(android.graphics.Color.argb(70,150,150,150))
+                    .visible(true)
             )
         }
     }

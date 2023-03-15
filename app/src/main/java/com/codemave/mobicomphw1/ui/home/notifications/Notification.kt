@@ -20,6 +20,7 @@ import androidx.navigation.NavController
 import com.codemave.mobicomphw1.R
 import com.codemave.mobicomphw1.data.entity.Category
 import com.codemave.mobicomphw1.data.entity.Notification
+import com.codemave.mobicomphw1.ui.maps.geofence.Geofence
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -77,7 +78,10 @@ private fun NotificationListItem(
     selectedCategory: Category,
     viewModel: NotificationViewModel = viewModel()
 ) {
-    if (notification.reminderTime <= Date().time && selectedCategory == Category(1, "Reminders") || !notification.notificationSeen && selectedCategory == Category(2, "Show all")) {
+    if ((notification.notificationSeen || notification.reminderTime <= Date().time)
+        && selectedCategory == Category(1, "Reminders")
+        || /*!notification.notificationSeen
+        &&*/ selectedCategory == Category(2, "Show all")) {
 //notification.notificationSeen && selectedCategory == Category(1,"Reminders")
         ConstraintLayout(modifier = Modifier.fillMaxWidth()/*.clickable { onClick() }*/) {
 
@@ -159,7 +163,7 @@ private fun NotificationListItem(
             // edit icon
             IconButton(
                 onClick = {
-                    println("ID: ${notification.notificationId}")
+                    println("Edit clicked. ID: ${notification.notificationId}")
                     navController.navigate(
                         "edit/{id}"
                             .replace(
@@ -186,9 +190,20 @@ private fun NotificationListItem(
             // delete icon
             IconButton(
                 onClick = {
+                    val remId = notification.notificationId
+                    //this should delete the Geofence associated with the reminder:
+                    Geofence.removeGeofenceWithNotificationId(
+                        context,
+                        notification.notificationId
+                    )
                     coroutineScope.launch {
+//                        Geofence.removeGeofenceWithNotificationId(
+//                            context,
+//                            notification.notificationId
+//                        )
                         viewModel.deleteNotification(notification)
                     }
+                    println("Reminder deleted. ID: $remId")
                     Toast.makeText(context, "Notification deleted", Toast.LENGTH_SHORT).show()
                 },
                 modifier = Modifier

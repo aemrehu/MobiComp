@@ -1,5 +1,6 @@
 package com.codemave.mobicomphw1.ui.maps
 
+import android.graphics.Color as androidColor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
@@ -20,6 +21,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.ktx.awaitMap
@@ -100,6 +102,14 @@ private fun setMapLongClick(
             "Lat: %1$.2f, Lng: %2$.2f",
             latlng.latitude,
             latlng.longitude
+        )
+        map.addCircle(
+            CircleOptions()
+                .center(latlng)
+                .radius(100.0)
+                .strokeColor(androidColor.argb(50,70,70,70))
+                .fillColor(androidColor.argb(70,150,150,150))
+                .visible(true)
         )
         map.addMarker(
             MarkerOptions().position(latlng).title("Reminder location").snippet(snippet)

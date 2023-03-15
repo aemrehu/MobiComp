@@ -110,33 +110,23 @@ fun AddNotification(
             )
 
             Spacer(modifier = Modifier.height(20.dp))
-//        Row() {
-//            OutlinedTextField(
-//                //modifier = Modifier.fillMaxWidth(0.9f),
-//                value = locationX.value,
-//                onValueChange = {text -> locationX.value = text },
-//                label = {Text(text = "X-coordinate")},
-//                shape = RoundedCornerShape(corner = CornerSize(50.dp))
-//            )
-//            OutlinedTextField(
-//                //modifier = Modifier.fillMaxWidth(0.9f),
-//                value = locationY.value,
-//                onValueChange = {text -> locationY.value = text },
-//                label = {Text(text = "Y-coordinate")},
-//                shape = RoundedCornerShape(corner = CornerSize(50.dp))
-//            )
-//
-//        }
-//            OutlinedTextField(
-//                modifier = Modifier.fillMaxWidth(0.9f),
-//                value = notificationTime.value,
-//                onValueChange = {notificationTime.value = it},
-//                label = {Text(text = "Time")},
-//                shape = RoundedCornerShape(corner = CornerSize(50.dp)),
-//                keyboardOptions = KeyboardOptions(
-//                        keyboardType = KeyboardType.Number
-//                )
-//            )
+
+            OutlinedButton(
+                enabled = true,
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(50.dp),
+                onClick = { navController.navigate("location") },
+                shape = RoundedCornerShape(corner = CornerSize(50.dp))
+            ) {
+                if (latlng == null) {
+                    Text(text = "Location")
+                } else {
+                    Text(text = "Lat: %.2f, Lng: %.2f".format(latlng.latitude, latlng.longitude))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedButton(
                 enabled = true,
@@ -164,24 +154,6 @@ fun AddNotification(
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
             ) {
                 Text(text = "Date: " + date.value)
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-
-            OutlinedButton(
-                enabled = true,
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .height(50.dp),
-                onClick = { navController.navigate("location") },
-                shape = RoundedCornerShape(corner = CornerSize(50.dp))
-            ) {
-                if (latlng == null) {
-                    Text(text = "Location")
-                } else {
-                    Text(text = "Lat: %.2f, Lng: %.2f".format(latlng.latitude, latlng.longitude))
-                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
