@@ -194,7 +194,9 @@ fun EditNotification(
                                 creatorId = notification.creatorId,
                                 notificationSeen = notification.notificationSeen,
                                 latitude = latitude,
-                                longitude = longitude
+                                longitude = longitude,
+                                timeEnabled = notification.timeEnabled,
+                                locationEnabled = notification.locationEnabled
                             )
                         )
                     }

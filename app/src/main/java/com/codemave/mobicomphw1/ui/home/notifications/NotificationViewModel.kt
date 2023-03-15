@@ -37,9 +37,16 @@ class NotificationViewModel(
     suspend fun saveNotification(notification: Notification): Long {
         val result = notificationRepository.addNotification(notification)
         println("Saved. ID: $result")
-        //createReminderNotification(notification)
-        setOneTimeNotification(notification, result)
-        Geofence.addGeofence(notification,result)
+
+        if (notification.timeEnabled) {
+            setOneTimeNotification(notification, result)
+        } else if (!notification.locationEnabled) {
+            updateSeen(notification, result, true)
+        }
+        if (notification.locationEnabled) {
+            Geofence.addGeofence(notification, result)
+//            updateSeen(notification, result, false)
+        }
         return result
     }
 
@@ -50,7 +57,11 @@ class NotificationViewModel(
     suspend fun updateNotification(notification: Notification) {
         val result = notificationRepository.updateNotification(notification)
         println("Updated. ID: ${notification.notificationId}")
-        setOneTimeNotification(notification, notification.notificationId)
+        if (notification.timeEnabled) {
+            setOneTimeNotification(notification, notification.notificationId)
+        } else if (!notification.locationEnabled) {
+            updateSeen(notification, notification.notificationId, true)
+        }
         return result
     }
 
@@ -85,7 +96,7 @@ private fun setOneTimeNotification(reminder: Notification, id: Long) {
         .setRequiredNetworkType(NetworkType.CONNECTED)
         .build()
 
-    val delay: Long = (reminder.reminderTime - reminder.creationTime) / 1000
+    val delay: Long = (reminder.reminderTime!! - reminder.creationTime) / 1000
 
     println("reminderTime: ${reminder.reminderTime}")
     println("creationTime: ${reminder.creationTime}")
@@ -116,41 +127,47 @@ private fun setOneTimeNotification(reminder: Notification, id: Long) {
 
 fun createReminderNotification(reminder: Notification, id: Long) {
 
-    val notificationId = id.toInt()
-    val builder = NotificationCompat.Builder(Graph.appContext, "CHANNEL_ID")
-        .setSmallIcon(R.drawable.ic_launcher_background)
-        .setContentTitle(reminder.notificationTitle)
-        .setContentText(
-            reminder.notificationTime
-            + " "
-            + reminder.notificationDate
-            + " "
-            + "Lat: %.2f, Lng: %.2f".format(reminder.latitude, reminder.longitude)
-        )
-        .setPriority(NotificationCompat.PRIORITY_HIGH)
+    if (!reminder.notificationSeen) {
+        val notificationId = id.toInt()
+        val builder = NotificationCompat.Builder(Graph.appContext, "CHANNEL_ID")
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentTitle(reminder.notificationTitle)
+            .setContentText(
+                reminder.notificationTime
+                + " "
+                + reminder.notificationDate
+                + " "
+                + "Lat: %.2f, Lng: %.2f".format(reminder.latitude, reminder.longitude)
+            )
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
 
-    with(from(Graph.appContext)) {
-        notify(notificationId, builder.build())
+        with(from(Graph.appContext)) {
+            notify(notificationId, builder.build())
+        }
+        updateSeen(reminder, id, true)
     }
-    updateSeen(reminder)
 }
 
 private fun updateSeen(
     reminder: Notification,
+    id: Long,
+    seen: Boolean,
     notificationRepository: NotificationRepository = Graph.notificationRepository
 ) {
     notificationRepository.update2(
         Notification(
-            notificationId = reminder.notificationId,
+            notificationId = id,
             notificationTitle = reminder.notificationTitle,
             notificationTime = reminder.notificationTime,
             notificationDate = reminder.notificationDate,
             reminderTime = reminder.reminderTime,
             creationTime = reminder.creationTime,
             creatorId = reminder.creatorId,
-            notificationSeen = true,
+            notificationSeen = seen,
             latitude = reminder.latitude,
-            longitude = reminder.longitude
+            longitude = reminder.longitude,
+            timeEnabled = reminder.timeEnabled,
+            locationEnabled = reminder.locationEnabled
         )
     )
 }

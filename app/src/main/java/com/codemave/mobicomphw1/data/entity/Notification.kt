@@ -21,5 +21,7 @@ data class Notification(
     @ColumnInfo(name = "reminderTime") val reminderTime: Long,
     @ColumnInfo(name = "creationTime") val creationTime: Long,
     @ColumnInfo(name = "creatorId") val creatorId: String,
-    @ColumnInfo(name = "seen") val notificationSeen: Boolean
+    @ColumnInfo(name = "seen") val notificationSeen: Boolean,
+    @ColumnInfo(name = "timeEnabled") val timeEnabled: Boolean,
+    @ColumnInfo(name = "locationEnabled") val locationEnabled: Boolean
 )

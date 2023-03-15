@@ -37,6 +37,9 @@ fun AddNotification(
     viewModel: NotificationViewModel = viewModel()
 
 ) {
+    var timeEnabled: Boolean = false
+    var locationEnabled: Boolean = false
+
     val timeContext = LocalContext.current
 
     val calendar = Calendar.getInstance()
@@ -104,8 +107,8 @@ fun AddNotification(
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(0.9f),
                 value = notificationTitle.value,
-                onValueChange = {notificationTitle.value = it},
-                label = {Text(text = "Title")},
+                onValueChange = { notificationTitle.value = it },
+                label = { Text(text = "Title") },
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
             )
 
@@ -116,13 +119,21 @@ fun AddNotification(
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
                     .height(50.dp),
-                onClick = { navController.navigate("location") },
+                onClick = {
+//                    locationEnabled = true
+                    navController.navigate("location")
+                },
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
             ) {
                 if (latlng == null) {
                     Text(text = "Location")
                 } else {
-                    Text(text = "Lat: %.2f, Lng: %.2f".format(latlng.latitude, latlng.longitude))
+                    Text(
+                        text = "Lat: %.2f, Lng: %.2f".format(
+                            latlng.latitude,
+                            latlng.longitude
+                        )
+                    )
                 }
             }
 
@@ -135,6 +146,7 @@ fun AddNotification(
                     .height(50.dp),
                 onClick = {
                     timePickerDialog.show()
+                    timeEnabled = true
                 },
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
             ) {
@@ -150,6 +162,7 @@ fun AddNotification(
                     .height(50.dp),
                 onClick = {
                     datePickerDialog.show()
+                    timeEnabled = true
                 },
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
             ) {
@@ -167,6 +180,9 @@ fun AddNotification(
                     // if (CheckTimeDate()) {
                     if (notificationTitle.value == "") {
                         notificationTitle.value = "Reminder"
+                    }
+                    if (latlng != null) {
+                        locationEnabled = true
                     }
                     val timeValues = time.value.split(":")
                     val dateValues = date.value.split(".")
@@ -187,7 +203,9 @@ fun AddNotification(
                                 creatorId = SharedPreferences(context).username,
                                 notificationSeen = false,
                                 latitude = latlng?.latitude,
-                                longitude = latlng?.longitude
+                                longitude = latlng?.longitude,
+                                timeEnabled = timeEnabled,
+                                locationEnabled = locationEnabled
                             )
                         )
                     }

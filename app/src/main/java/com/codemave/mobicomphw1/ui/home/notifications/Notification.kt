@@ -78,11 +78,10 @@ private fun NotificationListItem(
     selectedCategory: Category,
     viewModel: NotificationViewModel = viewModel()
 ) {
-    if ((notification.notificationSeen || notification.reminderTime <= Date().time)
+    if (notification.notificationSeen
         && selectedCategory == Category(1, "Reminders")
-        || /*!notification.notificationSeen
-        &&*/ selectedCategory == Category(2, "Show all")) {
-//notification.notificationSeen && selectedCategory == Category(1,"Reminders")
+        || selectedCategory == Category(2, "Show all")) {
+
         ConstraintLayout(modifier = Modifier.fillMaxWidth()/*.clickable { onClick() }*/) {
 
             val coroutineScope = rememberCoroutineScope()
