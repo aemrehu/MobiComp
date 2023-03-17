@@ -26,6 +26,8 @@ import androidx.navigation.NavController
 import com.codemave.mobicomphw1.R
 import com.codemave.mobicomphw1.SharedPreferences
 import com.codemave.mobicomphw1.data.entity.Notification
+import com.codemave.mobicomphw1.ui.home.speechtotext.SpeechToTextViewModel
+import com.codemave.mobicomphw1.ui.home.speechtotext.startSpeechToText
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 import java.util.*
@@ -111,6 +113,26 @@ fun AddNotification(
                 label = { Text(text = "Title") },
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Call speech recognition button
+            val vm: SpeechToTextViewModel = viewModel()
+            Button(
+                enabled = true,
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(40.dp),
+                onClick = {
+                    startSpeechToText(
+                        vm,
+                        context
+                    )
+                },
+                shape = RoundedCornerShape(corner = CornerSize(40.dp))
+            ) {
+                Text(text = "Speech to text")
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
