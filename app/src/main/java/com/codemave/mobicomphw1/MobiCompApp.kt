@@ -13,18 +13,20 @@ import com.codemave.mobicomphw1.ui.login.LoginScreen
 import com.codemave.mobicomphw1.ui.maps.AllMarkersMap
 import com.codemave.mobicomphw1.ui.maps.NotificationLocationMap
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 
 @Composable
 fun MobiCompApp(
     appState: MobiCompAppState = rememberMobiCompAppState(),
-    context: Context
+    context: Context,
+    getGoogleLoginAuth: GoogleSignInClient
 ) {
     NavHost(
         navController = appState.navController,
         startDestination = "login"
     ) {
         composable(route = "login") {
-            LoginScreen(navController = appState.navController, context = context)
+            LoginScreen(navController = appState.navController, context = context, getGoogleLoginAuth = getGoogleLoginAuth)
         }
         composable(route = "home") {
             HomeScreen(navController = appState.navController, context)

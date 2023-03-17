@@ -18,7 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import com.codemave.mobicomphw1.Graph
 import com.codemave.mobicomphw1.R
 import com.codemave.mobicomphw1.SharedPreferences
 import com.codemave.mobicomphw1.ui.login.Logged
@@ -42,24 +45,32 @@ fun ProfileScreen(
             backgroundColor = appBarColor
         )
 
-        Spacer(modifier = Modifier.height(300.dp))
+        Spacer(modifier = Modifier.height(250.dp))
 
-        Icon(
-            painter = rememberVectorPainter(Icons.Filled.Person),
-            contentDescription = "login_image",
+        AsyncImage(
+            model = SharedPreferences(Graph.appContext).photoUrl,
+            contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
                 .size(150.dp)
         )
 
+        Spacer(modifier = Modifier.height(20.dp))
+
+//        Icon(
+//            painter = rememberVectorPainter(Icons.Filled.Person),
+//            contentDescription = "login_image",
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .size(150.dp)
+//        )
+
         Text(
             text = SharedPreferences(context).username,
-            modifier = Modifier
-                .padding(start = 4.dp)
-                .heightIn(max = 24.dp)
+            fontSize = 6.em
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         Button(
             modifier = Modifier
@@ -68,7 +79,7 @@ fun ProfileScreen(
             onClick = { navController.navigate("login") },
             shape = RoundedCornerShape(corner = CornerSize(50.dp))
         ) {
-            Text(text = "Log out")
+            Text(text = "'Log out'")
         }
 
     }
@@ -81,7 +92,7 @@ private fun TopBar(
     TopAppBar(
         title = {
             Text(
-                text = stringResource(R.string.app_name),
+                text = "Profile",
                 color = MaterialTheme.colors.primary,
                 modifier = Modifier
                     .padding(start = 4.dp)

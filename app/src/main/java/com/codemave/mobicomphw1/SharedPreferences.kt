@@ -12,4 +12,8 @@ class SharedPreferences(context: Context) {
     var password: String
         get() = sharedPref.getString("password","") ?: ""
         set(value) = sharedPref.edit().putString("password", value).apply()
+
+    var photoUrl: String
+        get() = sharedPref.getString("photoUrl","") ?: ""
+        set(value) = sharedPref.edit().putString("photoUrl", value).apply()
 }

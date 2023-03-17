@@ -6,6 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import com.codemave.mobicomphw1.ui.theme.MobiCompHW1Theme
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 class MainActivity : ComponentActivity() {
 
@@ -28,10 +31,20 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     color = MaterialTheme.colors.background
                 ) {
-                    MobiCompApp(context = applicationContext)
+                    MobiCompApp(context = applicationContext, getGoogleLoginAuth = getGoogleLoginAuth())
                 }
 
             }
         }
+    }
+
+    private fun getGoogleLoginAuth(): GoogleSignInClient {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .requestIdToken(getString(R.string.gcp_id))
+            .requestId()
+            .requestProfile()
+            .build()
+        return GoogleSignIn.getClient(this, gso)
     }
 }
