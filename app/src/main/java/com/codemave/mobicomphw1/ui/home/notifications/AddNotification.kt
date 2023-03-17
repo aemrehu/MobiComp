@@ -118,16 +118,29 @@ fun AddNotification(
 
             // Call speech recognition button
             val vm: SpeechToTextViewModel = viewModel()
+            var buttonColor = remember { mutableStateOf(Color.DarkGray) }
             Button(
                 enabled = true,
                 modifier = Modifier
-                    .fillMaxWidth(0.9f)
+                    .fillMaxWidth(0.5f)
                     .height(40.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor.value) ,
                 onClick = {
+                    buttonColor.value = Color.Green
                     startSpeechToText(
                         vm,
-                        context
+                        context,
+                        finished = {
+                            buttonColor.value = Color.DarkGray
+
+                        },
+                        textChange = {
+                            if (vm.textFromSpeech != null) {
+                                notificationTitle.value = vm.textFromSpeech!!
+                            }
+                        }
                     )
+
                 },
                 shape = RoundedCornerShape(corner = CornerSize(40.dp))
             ) {

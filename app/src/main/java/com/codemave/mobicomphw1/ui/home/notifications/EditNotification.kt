@@ -26,6 +26,8 @@ import androidx.navigation.NavController
 import com.codemave.mobicomphw1.R
 import com.codemave.mobicomphw1.SharedPreferences
 import com.codemave.mobicomphw1.data.entity.Notification
+import com.codemave.mobicomphw1.ui.home.speechtotext.SpeechToTextViewModel
+import com.codemave.mobicomphw1.ui.home.speechtotext.startSpeechToText
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 import java.util.*
@@ -111,6 +113,39 @@ fun EditNotification(
                 label = {Text(text = "Title")},
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Call speech recognition button
+            val vm: SpeechToTextViewModel = viewModel()
+            var buttonColor = remember { mutableStateOf(Color.DarkGray) }
+            Button(
+                enabled = true,
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .height(40.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor.value) ,
+                onClick = {
+                    buttonColor.value = Color.Green
+                    startSpeechToText(
+                        vm,
+                        context,
+                        finished = {
+                            buttonColor.value = Color.DarkGray
+
+                        },
+                        textChange = {
+                            if (vm.textFromSpeech != null) {
+                                notificationTitle.value = vm.textFromSpeech!!
+                            }
+                        }
+                    )
+
+                },
+                shape = RoundedCornerShape(corner = CornerSize(40.dp))
+            ) {
+                Text(text = "Speech to text")
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 

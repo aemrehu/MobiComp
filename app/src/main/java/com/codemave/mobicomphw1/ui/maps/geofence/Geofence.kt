@@ -80,9 +80,10 @@ object Geofence {
                     radius.toFloat()
                 )
                 // 3
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_DWELL)
                 // 4
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setLoiteringDelay(5000)
                 .build()
         }
 

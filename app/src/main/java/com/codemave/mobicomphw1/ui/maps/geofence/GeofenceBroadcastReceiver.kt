@@ -17,8 +17,9 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             val geofencingEvent = GeofencingEvent.fromIntent(intent)
             val geofencingTransition = geofencingEvent?.geofenceTransition
 
-            if (geofencingTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
-                println("Geofence: ENTERED")
+            if (geofencingTransition == Geofence.GEOFENCE_TRANSITION_ENTER
+                || geofencingTransition == Geofence.GEOFENCE_TRANSITION_DWELL) {
+                println("Geofence: ENTERED or DWELLED")
                 val id = intent.getLongExtra("reminderID",0)
                 val reminder: Notification = Graph.notificationRepository.getNotificationWithId(id)
                 if (reminder != null) {

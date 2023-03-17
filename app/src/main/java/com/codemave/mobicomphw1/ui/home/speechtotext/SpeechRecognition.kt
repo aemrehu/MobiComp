@@ -12,9 +12,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun startSpeechToText(
     vm: SpeechToTextViewModel,
     ctx: Context,
-    //finished: ()-> Unit,
+    finished: ()-> Unit,
+    textChange: ()-> Unit
     //vm: ViewModel = SpeechtToTextViewModel = viewModel()
 ) {
+    println("Speech recognition started.")
     val speechRecognizer = SpeechRecognizer.createSpeechRecognizer(ctx)
     val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
     speechRecognizerIntent.putExtra(
@@ -23,7 +25,7 @@ fun startSpeechToText(
     )
 
     // Optionally I have added my mother language
-    speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "el_GR")
+//    speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "el_GR")
 
     speechRecognizer.setRecognitionListener(object : RecognitionListener {
         override fun onReadyForSpeech(bundle: Bundle?) {}
@@ -31,7 +33,7 @@ fun startSpeechToText(
         override fun onRmsChanged(v: Float) {}
         override fun onBufferReceived(bytes: ByteArray?) {}
         override fun onEndOfSpeech() {
-            //finished()
+            finished()
             println("Speech recognition finished!")
             // changing the color of your mic icon to
             // gray to indicate it is not listening or do something you want
@@ -46,6 +48,7 @@ fun startSpeechToText(
                 // to our viewmodel
                 vm.textFromSpeech = result[0]
                 println("Result: ${result[0]}")
+                textChange()
             }
         }
 
